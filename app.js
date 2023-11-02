@@ -1,4 +1,3 @@
-// Импорты экспресс, конфиг, библиотека, клавиатура, каналы с фото
 import express, { query } from 'express';
 import { PORT, TOKEN } from './config.js';
 import TelegramBot from 'node-telegram-bot-api';
@@ -9,17 +8,14 @@ import { channels } from './channelsTG.js'
 const app = express();
 const bot = new TelegramBot(TOKEN, {polling: true});
 
-// Приветственное сообщение бота
 const welcomeMessage = `Приветствую вас на Бот-Канале компании Driada. Рад, что вы с нами. Вот наше меню, при переходе в котором - вы можете ознакомиться с материалами для отделки бани или сауны. Если вы хотите оформить заказ - воспользуйтесь кнопкой 'order' в меню. В следующей форме - ваш номер телефона, Имя, что вас интересует или размеры вашего помещения. После обработки вашего сообщения с вами свяжутся.`;
 
 // Коллекция заказов
 const orders = [];
 
-// Обработчик команды /start
 bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
-    
-    // Отправка приветственного сообщения
+
     bot.sendMessage(chatId, welcomeMessage, replyOptions, {disable_web_page_preview: true});
 });
 
@@ -39,14 +35,12 @@ bot.on('callback_query', (query) => {
     }
 });
 
-// Обработчик команды share
 bot.onText(/\/share/, (msg) => {
     const chatId = msg.chat.id;
 
     bot.sendMessage(chatId, 'Нажми на кнопку "Поделиться", чтобы поделиться ботом с друзьями.', replyOptions);
   });
 
-// Обработчик команды picture
 bot.onText(/\/picture/, (msg) => {
     const chatId = msg.chat.id;
     // Формирование и отправка сообщения с меню
@@ -56,7 +50,6 @@ bot.onText(/\/picture/, (msg) => {
     bot.sendMessage(chatId, menuMessage);
 });
 
-// Обработчик команды order
 bot.onText(/\/order/, (msg) => {
     const chatId = msg.chat.id;
     getOrder(chatId);
@@ -99,7 +92,6 @@ function getOrder(idChat) {
     });
 };
 
-// Функция для получения текущей даты в формате "dd/mm/yyyy"
 function getCurrentDate() {
     const date = new Date();
     const day = ('0' + date.getDate()).slice(-2);
@@ -108,5 +100,4 @@ function getCurrentDate() {
     return `${day}/${month}/${year}`;
 }
 
-// Запуск HTTP сервера
 app.listen(PORT, () => console.log(`My server is running on port ${PORT}`));
